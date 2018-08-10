@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"gogram/views"
@@ -10,8 +9,10 @@ import (
 )
 
 var (
-	homeView    *views.View
-	contactView *views.View
+	homeView     *views.View
+	contactView  *views.View
+	faqView      *views.View
+	notFoundView *views.View
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -24,9 +25,14 @@ func contact(w http.ResponseWriter, r *http.Request) {
 	must(contactView.Render(w, nil))
 }
 
+func faq(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	must(faqView.Render(w, nil))
+}
+
 func notFound(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
-	fmt.Fprint(w, "<h1>Sorry Page Not Found!!! :-(</h1>")
+	must(notFoundView.Render(w, nil))
 }
 
 func main() {
@@ -38,9 +44,18 @@ func main() {
 		"base",
 		"views/contact.gohtml",
 	)
+	faqView = views.NewView(
+		"base",
+		"views/faq.gohtml",
+	)
+	notFoundView = views.NewView(
+		"base",
+		"views/notfound.gohtml",
+	)
 	r := mux.NewRouter()
 	r.HandleFunc("/", home)
 	r.HandleFunc("/contact", contact)
+	r.HandleFunc("/faq", faq)
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 	http.ListenAndServe(":3000", r)
 }
