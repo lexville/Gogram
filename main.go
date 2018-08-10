@@ -4,22 +4,30 @@ import (
 	"fmt"
 	"net/http"
 
+	"gogram/views"
+
 	"github.com/gorilla/mux"
+)
+
+var (
+	homeView    *views.View
+	contactView *views.View
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprint(w, "<h1>Welcome to my awesome site! </h1>")
+	err := homeView.Template.Execute(w, nil)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprint(w, "To get in touch, pleese send an email to <a href=\"mailto:support@gophergram.com\">support@gophergram.com</a>")
-}
-
-func faq(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprint(w, "<h1>FAQ</h1>")
+	err := contactView.Template.Execute(w, nil)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func notFound(w http.ResponseWriter, r *http.Request) {
@@ -28,10 +36,11 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	homeView = views.NewView("views//home.gohtml")
+	contactView = views.NewView("views/contact.gohtml")
 	r := mux.NewRouter()
 	r.HandleFunc("/", home)
 	r.HandleFunc("/contact", contact)
-	r.HandleFunc("/faq", faq)
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 	http.ListenAndServe(":3000", r)
 }
