@@ -1,13 +1,13 @@
 package views
 
 import (
-	"net/http"
 	"html/template"
+	"net/http"
 	"path/filepath"
 )
 
 var (
-	layoutDir = "views/layouts/"
+	layoutDir         = "views/layouts/"
 	templateExtension = ".gohtml"
 )
 
@@ -21,7 +21,14 @@ type View struct {
 
 // Render is used to render the view with the predefined layout
 func (v *View) Render(w http.ResponseWriter, data interface{}) error {
+	w.Header().Set("Content-Type", "text/html")
 	return v.Template.ExecuteTemplate(w, v.Layout, data)
+}
+
+func (v *View) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if err := v.Render(w, nil); err != nil {
+		panic(err)
+	}
 }
 
 // NewView takes in the files needed for the view
