@@ -60,8 +60,8 @@ func main() {
 	)
 	signupView = views.NewView(
 		"base",
-		"views/signupForm.gohtml",
-		"views/signup.gohtml",
+		"views/users/signupForm.gohtml",
+		"views/users/new.gohtml",
 	)
 	r := mux.NewRouter()
 	r.HandleFunc("/", home)
