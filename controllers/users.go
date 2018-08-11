@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"Gogram/views"
+	"fmt"
 	"net/http"
 )
 
@@ -24,10 +25,22 @@ func NewUsers() *Users {
 	}
 }
 
-// New Renders the signup view
+// New renders the signup view to create a new
+// user account
+//
+// GET /signup
 func (u *Users) New(w http.ResponseWriter, r *http.Request) {
 	err := u.NewView.Render(w, nil)
 	if err != nil {
 		panic(err)
 	}
+}
+
+// Create is used to process the signup form when a
+// user submits it from the signup page. This is used to
+// create a new user account
+//
+// POST /signup
+func (u *Users) Create(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "This is a temporary response")
 }
