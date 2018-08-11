@@ -26,8 +26,8 @@ func NewUsers() *Users {
 	return &Users{
 		NewView: views.NewView(
 			"base",
-			"views/users/signupForm.gohtml",
-			"views/users/new.gohtml",
+			"users/signupForm",
+			"users/new",
 		),
 	}
 }

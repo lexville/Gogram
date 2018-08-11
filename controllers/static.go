@@ -6,10 +6,10 @@ import "Gogram/views"
 // It contains the templates needed by the static pages
 func NewStatic() *Static {
 	return &Static{
-		Home:     views.NewView("base", "views/static/home.gohtml"),
-		Contact:  views.NewView("base", "views/static/contact.gohtml"),
-		NotFound: views.NewView("base", "views/static/notfound.gohtml"),
-		FAQ:      views.NewView("base", "views/static/faq.gohtml"),
+		Home:     views.NewView("base", "static/home"),
+		Contact:  views.NewView("base", "static/contact"),
+		NotFound: views.NewView("base", "static/notfound"),
+		FAQ:      views.NewView("base", "static/faq"),
 	}
 }
 
