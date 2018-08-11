@@ -11,6 +11,13 @@ type Users struct {
 	NewView *views.View
 }
 
+// SignupForm contains an email of type string
+// as well as password of type string
+type SignupForm struct {
+	Email    string `schema:"email"`
+	Password string `schema:"password"`
+}
+
 // NewUsers is used to create a new users controller
 // This function will panic if the templates aren't
 // parsed correctly and so it should only be used during
@@ -42,5 +49,9 @@ func (u *Users) New(w http.ResponseWriter, r *http.Request) {
 //
 // POST /signup
 func (u *Users) Create(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "This is a temporary response")
+	form := SignupForm{}
+	if err := parseForm(r, &form); err != nil {
+		panic(err)
+	}
+	fmt.Fprintln(w, form)
 }
