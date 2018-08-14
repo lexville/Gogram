@@ -17,6 +17,8 @@ var (
 	ErrInvalidID = errors.New("models: ID provided was invalid")
 )
 
+// NewUserService opens up a new database connection and returns
+// the service and the error
 func NewUserService(psqlinfo string) (*UserService, error) {
 	db, err := gorm.Open("postgres", psqlinfo)
 	if err != nil {
@@ -30,6 +32,7 @@ func NewUserService(psqlinfo string) (*UserService, error) {
 	}, nil
 }
 
+// UserService contains an instance of the db
 type UserService struct {
 	db *gorm.DB
 }
