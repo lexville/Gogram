@@ -3,6 +3,8 @@ package models
 import (
 	"errors"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/jinzhu/gorm"
 	// init() gets called before main()
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -16,6 +18,8 @@ var (
 	// id exists
 	ErrInvalidID = errors.New("models: ID provided was invalid")
 )
+
+const userPwPepper = "tZXMdcNWU5jLj57JOlcE"
 
 // NewUserService opens up a new database connection and returns
 // the service and the error
@@ -122,6 +126,14 @@ func (us *UserService) Delete(id uint) error {
 
 // Create will create the provided user
 func (us *UserService) Create(user *User) error {
+	paswordByte := []byte(user.Password + userPwPepper)
+	hashedBytes, err := bcrypt.GenerateFromPassword(
+		paswordByte, bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	user.PasswordHash = string(hashedBytes)
+	user.Password = ""
 	return us.db.Create(user).Error
 }
 
@@ -129,6 +141,8 @@ func (us *UserService) Create(user *User) error {
 // name and email
 type User struct {
 	gorm.Model
-	Name  string
-	Email string `gorm:"not null;unique_index"`
+	Name         string
+	Email        string `gorm:"not null;unique_index"`
+	Password     string `gorm:"-"`
+	PasswordHash string `gorm:"not null"`
 }

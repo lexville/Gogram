@@ -9,8 +9,9 @@ import (
 
 // Users contains NewView which is of type *views.View
 type Users struct {
-	NewView *views.View
-	us      *models.UserService
+	NewView   *views.View
+	LoginView *views.View
+	us        *models.UserService
 }
 
 // SignupForm contains an email of type string
@@ -31,6 +32,11 @@ func NewUsers(us *models.UserService) *Users {
 			"base",
 			"users/signupForm",
 			"users/new",
+		),
+		LoginView: views.NewView(
+			"base",
+			"users/loginForm",
+			"users/login",
 		),
 		us: us,
 	}
@@ -58,12 +64,32 @@ func (u *Users) Create(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	user := models.User{
-		Name:  form.Name,
-		Email: form.Email,
+		Name:     form.Name,
+		Email:    form.Email,
+		Password: form.Password,
 	}
 	if err := u.us.Create(&user); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
+	}
+	fmt.Fprintln(w, user)
+}
+
+// LoginForm contains an email of type string
+// as well as password of type string
+type LoginForm struct {
+	Email    string `schema:"email"`
+	Password string `schema:"password"`
+}
+
+// Login is used to veryfy the provided email address and passwors
+// and login the user if they are indeed the account holders
+//
+// POST /login
+func (u *Users) Login(w http.ResponseWriter, r *http.Request) {
+	form := LoginForm{}
+	if err := parseForm(r, &form); err != nil {
+		panic(err)
 	}
 	fmt.Fprintln(w, form)
 }
