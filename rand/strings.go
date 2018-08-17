@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 )
 
+// RememberTokenBytes shoulb be not less than 32
 const RememberTokenBytes = 32
 
 // Bytes will help us generate n random bytes or will
