@@ -27,6 +27,21 @@ var (
 
 const userPwPepper = "tZXMdcNWU5jLj57JOlcE"
 
+// User model contains the id, created at, deleted at
+// name and email
+type User struct {
+	gorm.Model
+	Name         string
+	Email        string `gorm:"not null;unique_index"`
+	Password     string `gorm:"-"`
+	PasswordHash string `gorm:"not null"`
+}
+
+// UserService contains an instance of the db
+type UserService struct {
+	db *gorm.DB
+}
+
 // NewUserService opens up a new database connection and returns
 // the service and the error
 func NewUserService(psqlinfo string) (*UserService, error) {
@@ -40,11 +55,6 @@ func NewUserService(psqlinfo string) (*UserService, error) {
 	return &UserService{
 		db: db,
 	}, nil
-}
-
-// UserService contains an instance of the db
-type UserService struct {
-	db *gorm.DB
 }
 
 // ByID will look up by the id provided
@@ -163,14 +173,4 @@ func (us *UserService) Create(user *User) error {
 	user.PasswordHash = string(hashedBytes)
 	user.Password = ""
 	return us.db.Create(user).Error
-}
-
-// User model contains the id, created at, deleted at
-// name and email
-type User struct {
-	gorm.Model
-	Name         string
-	Email        string `gorm:"not null;unique_index"`
-	Password     string `gorm:"-"`
-	PasswordHash string `gorm:"not null"`
 }
